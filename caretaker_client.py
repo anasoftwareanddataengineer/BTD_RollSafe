@@ -18,6 +18,7 @@ report_lbl_pushes = M5TextBox(10, 100, "P", lcd.FONT_DejaVu24,
 report_lbl_distance = M5TextBox(10, 140, "D", lcd.FONT_DejaVu24,
                        0xffffff, rotate=0)  # white
 
+# Set up wifi
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 wlan.connect("M5", "")
@@ -52,31 +53,15 @@ def request_report(s):
 
 def display_report(report):
     '''Display report on LCD'''
-    #status_lbl.setText(report)
     report = report.split(";")
     
+    # Display the report on the LCD
     report_lbl_pushes.setText("Pushes: " + report[0])
     report_lbl_distance.setText("Distance: " + report[1])
-    
-    # time.sleep(5)
-    return 
-   
-def fetch_help(s):
-    '''Fetch help request'''
-
-    try:
-        report = s.recv(1024).decode('utf-8')
-    except:
-        return False
-
-    return report == 'request_help'
 
 def display_help_message():
     '''Display help request'''
     status_lbl.setText("Received help request")
-    return
-
-
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try:
@@ -89,17 +74,19 @@ try:
 
     while True:
 
+        # Fetch report from server watch
         if btnA.wasPressed():
             report = request_report(s)
         
         try:
+            # Receive from server
             received = s.recv(1024).decode('utf-8').strip()
             
             if received != '':
                 lcd.clear(0x000000)  # black    
-
+                
                 if received == 'request_help':
-                    status_lbl.setText("Received help request")
+                    display_help_message()
                 else:
                     display_report(received)
         except:

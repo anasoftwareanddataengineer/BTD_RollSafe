@@ -1,6 +1,4 @@
 import select
-import socket
-
 from m5stack import lcd
 import machine
 import time
@@ -32,6 +30,7 @@ s.bind(hostAddr)
 s.listen(1)
 
 Fs = 10 # sampling frequency
+# filter coefficients
 a_lpf = [0.0296128]
 b_lpf = [0.4851936, 0.4851936]
 a_hpf = [-0.77411293]
@@ -40,14 +39,15 @@ b_hpf = [0.11294354, -0.11294354]
 array_accel_mag = []
 
 def applyFilter(x, inputCoeff = [1,0], outputCoeff = [0]):
-# Filter the signal using the difference equation
+    '''Filter the signal using the difference equation'''
     y = [0 for element in range(len(x))]
     for i in range(2, len(x)):
         y[i] = outputCoeff[0]*y[i-1] + inputCoeff[0]*x[i] + inputCoeff[1]*x[i-1]
     return y
 
 def process_pushes(array_accel_mag):
-    tlims = [0,int(len(array_accel_mag)/Fs)]        # to have 1 second of simulated signal
+    '''Process the signal to count the number of pushes'''
+    tlims = [0,int(len(array_accel_mag)/Fs)]  # to have 1 second of simulated signal
 
     # generate the signal based on the above frequencies and amplitudes
     x = array_accel_mag[0:tlims[1]*Fs]
@@ -76,28 +76,8 @@ def process_pushes(array_accel_mag):
     
     return pushes
 
-
-def process_activity(array_accel_mag):
-    tlims = [0,int(len(array_accel_mag)/Fs)]        # to have 1 second of simulated signal
-
-    # generate the signal based on the above frequencies and amplitudes
-    x = array_accel_mag[0:tlims[1]*Fs]
-
-    # let y be the low-pass filtered signal
-    y = applyFilter(x,b_lpf,a_lpf)
-
-    threshold_for_activity = 1.20
-
-    for i in y:
-        if i >= threshold_for_activity:
-            return True
-        
-    return False
-
-def isSocketClosed(sock: socket.socket) -> bool:
-    return False
-
 def readSocketIfAvailable() -> str:
+    ''' Read from the socket if there is something to read'''
     if readable == None:
         return ''
 
@@ -119,8 +99,8 @@ def readSocketIfAvailable() -> str:
 push_count = 0
 last_activity_seconds_ago = 0
 
-conn, addr = s.accept()
-readable = [conn]
+conn, addr = s.accept() # TODO remove maybe
+readable = [conn]  # TODO remove maybe
 
 while True:
 
