@@ -38,6 +38,23 @@ b_hpf = [0.11294354, -0.11294354]
 
 array_accel_mag = []
 
+"""
+Approximating the distance of wheelchair pushes is challenging due to factors like wheel size, terrain, and wheelchair mechanics.
+However, you can estimate it based on the number of pushes and some assumptions.
+Therefore, we measured the average distance covered per push from the group of us (Edona, Ana, Yujiao and Jakob) and considered factors like wheel circumference. 
+
+In this way we determined the following coefficient as the average of all of us pushing was 1.2 meters per push.
+This average distance per push is then later multiplied by the total number of pushes to obtain an approximate distance.
+
+Note that this approach provides an estimate and may not be very accurate due to various factors affecting wheelchair movement. 
+We guess that on average, a manual wheelchair push covers around 1 to 1.5 meters on flat, smooth surfaces, assuming standard 24-inch rear wheels.
+
+This is roughly equivalent to the findings of the following study: "Assessing mobility characteristics and activity levels of manual wheelchair users" (Tolerico et al., 2007, accessed via: https://www.rehab.research.va.gov/jour/07/44/4/tolerico.html)
+There it says: "Results from this study show that the wheelchair users traveled at an average speed of 0.79 m/s, indicating that on average wheelchair users travel at a slower pace than individuals without mobility impairments." (Tolerico et al., 2007)
+=> This means that on average, a manual wheelchair push covers around 0.79 meters per second and does (probably according to our measurements) around 1.5 pushes per second -> calculates to 0,79 meters per push * 1.5 pushes per second = around 1.185 meters per push (which is the coefficient we will use here)
+"""
+distance_coefficient = 1.185
+
 def applyFilter(x, inputCoeff = [1,0], outputCoeff = [0]):
     '''Filter the signal using the difference equation'''
     y = [0 for element in range(len(x))]
@@ -133,7 +150,7 @@ while True:
     label1.setText(str(push_count))
 
     if readSocketIfAvailable() == 'fetch_report':
-        conn.sendall('{};{}'.format(push_count, push_count*1.2).encode('utf-8'))
+        conn.sendall('{};{}'.format(push_count, push_count*distance_coefficient).encode('utf-8'))
         network_label.setText("Report sent")
         
     if btnA.wasPressed():
