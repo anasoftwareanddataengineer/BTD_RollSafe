@@ -58,21 +58,11 @@ def display_report(report):
     # Display the report on the LCD
     report_lbl_pushes.setText("Pushes: " + report[0])
     report_lbl_distance.setText("Distance: " + report[1])
-    time.sleep(5)
-    report_lbl_pushes.setText("Pushes: " + "fetch it!")
-    report_lbl_distance.setText("Distance: " + "fetch it!")
-
-    
 
 def display_help_message():
     '''Display help request'''
     status_lbl.setText("Received help request")
-    M5Led.on()
-    time.sleep(5)
-    status_lbl.setText("")
-    M5Led.off()
-    
-    
+    M5Led.on()  
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try:

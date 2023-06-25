@@ -97,7 +97,7 @@ def readSocketIfAvailable() -> str:
     if readable == None:
         return ''
 
-    r = select.select(readable,[],[],0)
+    r,w,e = select.select(readable,[],[],0)
     for rs in r: # iterate through readable sockets
         if rs is conn: # is it the server# read from a client
             data = rs.recv(1024)
@@ -145,7 +145,7 @@ while True:
         label2.setText('')
         M5Led.off()
 
-    label1.setText(str(push_count))
+    label1.setText("Push Count: " + str(push_count))
 
     if readSocketIfAvailable() == 'fetch_report':
         conn.sendall('{};{}'.format(push_count, push_count*distance_coefficient).encode('utf-8'))
