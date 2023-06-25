@@ -133,7 +133,7 @@ while True:
     label1.setText(str(push_count))
 
     if readSocketIfAvailable() == 'fetch_report':
-        conn.sendall('{};{}'.format(push_count, push_count*2).encode('utf-8'))
+        conn.sendall('{};{}'.format(push_count, push_count*1.2).encode('utf-8'))
         network_label.setText("Report sent")
         
     if btnA.wasPressed():
