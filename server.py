@@ -140,8 +140,10 @@ while True:
 
     if last_activity_seconds_ago >= 10:
         label2.setText('Move')
+        M5Led.on()
     else:
         label2.setText('')
+        M5Led.off()
 
     label1.setText(str(push_count))
 

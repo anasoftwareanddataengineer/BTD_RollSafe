@@ -67,10 +67,10 @@ def display_report(report):
 def display_help_message():
     '''Display help request'''
     status_lbl.setText("Received help request")
-    M5LED.on()
+    M5Led.on()
     time.sleep(5)
     status_lbl.setText("")
-    M5LED.off()
+    M5Led.off()
     
     
 
