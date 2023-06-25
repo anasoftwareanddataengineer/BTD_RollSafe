@@ -11,10 +11,9 @@ import socket
 
 lcd.clear()
 label0 = M5TextBox(50, 50, "waiting", lcd.FONT_Default, 0xcf0d00, rotate=0) #red text
-label1 = M5TextBox(70, 70, "Push Count", lcd.FONT_Default, 0xcf0d00, rotate=0) #red text
-label2 = M5TextBox(90, 90, "Move Count", lcd.FONT_Default, 0xcf0d00, rotate=0) # Move Text
-label3 = M5TextBox(50, 100, "", lcd.FONT_Default, 0xcf0d00, rotate=0) #red text
-network_label = M5TextBox(0, 130, "Network", lcd.FONT_Default, 0xcf0d00, rotate=0) 
+label1 = M5TextBox(10, 70, "Push Count: ", lcd.FONT_Default, 0xcf0d00, rotate=0) #red text
+label2 = M5TextBox(10, 90, "", lcd.FONT_Default, 0xcf0d00, rotate=0) # Move Text
+network_label = M5TextBox(10, 130, "Network Status", lcd.FONT_Default, 0xcf0d00, rotate=0) 
 
 imu0 = imu.IMU()
 
@@ -116,13 +115,10 @@ def readSocketIfAvailable() -> str:
 push_count = 0
 last_activity_seconds_ago = 0
 
-conn, addr = s.accept() # TODO remove maybe
-readable = [conn]  # TODO remove maybe
+conn, addr = s.accept()
+readable = [conn]
 
 while True:
-
-    conn, addr = s.accept()
-    readable = [conn]
 
     counter = 0
     while counter < 10:
