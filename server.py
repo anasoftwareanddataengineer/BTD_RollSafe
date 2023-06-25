@@ -31,7 +31,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind(hostAddr)
 s.listen(1)
 
-Fs = 10             # sampling frequency
+Fs = 10 # sampling frequency
 a_lpf = [0.0296128]
 b_lpf = [0.4851936, 0.4851936]
 a_hpf = [-0.77411293]
@@ -47,8 +47,6 @@ def applyFilter(x, inputCoeff = [1,0], outputCoeff = [0]):
     return y
 
 def process_pushes(array_accel_mag):
-    Fc = 25
-
     tlims = [0,int(len(array_accel_mag)/Fs)]        # to have 1 second of simulated signal
 
     # generate the signal based on the above frequencies and amplitudes
@@ -85,14 +83,10 @@ def process_activity(array_accel_mag):
     # generate the signal based on the above frequencies and amplitudes
     x = array_accel_mag[0:tlims[1]*Fs]
 
-    # testing lpf
-    Fc = 3
     # let y be the low-pass filtered signal
     y = applyFilter(x,b_lpf,a_lpf)
 
     threshold_for_activity = 1.20
-
-    threshold_signal_looking = []
 
     for i in y:
         if i >= threshold_for_activity:
@@ -101,34 +95,21 @@ def process_activity(array_accel_mag):
     return False
 
 def isSocketClosed(sock: socket.socket) -> bool:
-    # try:
-    #     s.send("ping")
-    #     network_label.setText('connected')
-    #     return False
-    # except:
-    #     # recreate the socket
-    #     network_label.setText('disconnected')
-    #     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #     s.bind(hostAddr)
-    #     s.listen(1)
-    #     return True
     return False
 
 def readSocketIfAvailable() -> str:
     if readable == None:
         return ''
 
-    r,w,e = select.select(readable,[],[],0)
+    r = select.select(readable,[],[],0)
     for rs in r: # iterate through readable sockets
         if rs is conn: # is it the server# read from a client
             data = rs.recv(1024)
             if not data:
-                # print('\r{}:'.format(rs.getpeername()),'disconnected')
                 network_label.setText('disconnected')
                 readable.remove(rs)
                 rs.close()
             else:
-                # print('\r{}:'.format(rs.getpeername()),data)
                 decoded = data.decode('UTF-8') # decode what is recieved from the client
                 network_label.setText(str(decoded))
                 return decoded
@@ -143,9 +124,8 @@ readable = [conn]
 
 while True:
 
-    if isSocketClosed(s):
-        conn, addr = s.accept()
-        readable = [conn]
+    conn, addr = s.accept()
+    readable = [conn]
 
     counter = 0
     while counter < 10:

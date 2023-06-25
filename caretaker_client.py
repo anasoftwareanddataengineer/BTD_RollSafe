@@ -79,7 +79,6 @@ def display_help_message():
 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#while True:
 try:
     time.sleep(1) # just a delay to see the wifi connected label, uncomment if needed
     s.connect((HOST, PORT))
