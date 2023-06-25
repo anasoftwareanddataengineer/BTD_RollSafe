@@ -10,12 +10,12 @@ HOST = "192.168.4.1"  # The server's hostname or IP address
 PORT = 50  # The port used by the server
 
 lcd.clear(0x000000)  # black
-status_lbl = M5TextBox(10, 60, "Status", lcd.FONT_DejaVu24,
+status_lbl = M5TextBox(10, 30, "Status", lcd.FONT_DejaVu18,
                        0xffffff, rotate=0)  # white
 
-report_lbl_pushes = M5TextBox(10, 100, "P", lcd.FONT_DejaVu24,
+report_lbl_pushes = M5TextBox(10, 120, "P: ", lcd.FONT_DejaVu24,
                        0xffffff, rotate=0)  # white
-report_lbl_distance = M5TextBox(10, 140, "D", lcd.FONT_DejaVu24,
+report_lbl_distance = M5TextBox(10, 140, "D: ", lcd.FONT_DejaVu24,
                        0xffffff, rotate=0)  # white
 
 # Set up wifi
@@ -58,10 +58,21 @@ def display_report(report):
     # Display the report on the LCD
     report_lbl_pushes.setText("Pushes: " + report[0])
     report_lbl_distance.setText("Distance: " + report[1])
+    time.sleep(5)
+    report_lbl_pushes.setText("Pushes: " + "fetch it!")
+    report_lbl_distance.setText("Distance: " + "fetch it!")
+
+    
 
 def display_help_message():
     '''Display help request'''
     status_lbl.setText("Received help request")
+    M5LED.on()
+    time.sleep(5)
+    status_lbl.setText("")
+    M5LED.off()
+    
+    
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try:
